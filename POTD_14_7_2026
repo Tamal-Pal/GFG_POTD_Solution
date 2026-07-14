@@ -1,0 +1,12 @@
+class Solution {
+public:
+    int find(vector<int>& arr) {
+        long long need = 0;
+
+        for (int i = arr.size() - 1; i >= 0; i--) {
+            need = (arr[i] + need + 1) / 2;   // ceil((arr[i] + need)/2)
+        }
+
+        return (int)need;
+    }
+};
