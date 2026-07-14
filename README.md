@@ -2,7 +2,9 @@
 
 # 🚀 GeeksforGeeks Daily Solutions
 
-<img src="https://readme-typing-svg.demolab.com?font=Poppins&size=28&duration=3500&pause=1000&color=2ECC71&center=true&vCenter=true&width=700&lines=Daily+GeeksforGeeks+Solutions;C%2B%2B+%7C+DSA+%7C+Competitive+Programming;Consistency+is+the+Key+to+Success!+🔥" alt="Typing SVG" />
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Poppins&size=28&duration=3500&pause=1000&color=2ECC71&center=true&vCenter=true&width=700&lines=Daily+GeeksforGeeks+Solutions;C%2B%2B+%7C+DSA+%7C+Competitive+Programming;Consistency+is+the+Key+to+Success!" alt="Typing SVG" />
+</p>
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/USERNAME/REPOSITORY?style=for-the-badge)
 ![GitHub forks](https://img.shields.io/github/forks/USERNAME/REPOSITORY?style=for-the-badge)
