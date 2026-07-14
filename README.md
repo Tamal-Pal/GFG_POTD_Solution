@@ -75,8 +75,6 @@ The goal is to:
 
 | Year | Status |
 |------|--------|
-| ✅ 2024 | Completed |
-| ✅ 2025 | Completed |
 | 🔥 2026 | In Progress |
 
 ---
