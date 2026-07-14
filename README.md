@@ -51,20 +51,10 @@ The goal is to:
 ```
 📦 GFG-Daily-Solutions
 │
-├── 2024/
-│   ├── January/
-│   ├── February/
-│   └── ...
-│
-├── 2025/
-│   ├── January/
-│   ├── February/
-│   └── ...
-│
 ├── 2026/
-│   ├── January/
-│   ├── February/
-│   └── ...
+│   ├── July/
+│       ├── POTD_14_7_2026
+│   ├── .....
 │
 └── README.md
 ```
