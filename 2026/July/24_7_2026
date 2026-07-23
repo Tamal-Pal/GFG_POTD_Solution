@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int ans = 1;
+
+    void dfs(Node* node, int len) {
+        if (!node) return;
+
+        ans = max(ans, len);
+
+        if (node->left) {
+            if (node->left->data == node->data + 1)
+                dfs(node->left, len + 1);
+            else
+                dfs(node->left, 1);
+        }
+
+        if (node->right) {
+            if (node->right->data == node->data + 1)
+                dfs(node->right, len + 1);
+            else
+                dfs(node->right, 1);
+        }
+    }
+
+    int longestConsecutive(Node* root) {
+        if (!root) return -1;
+
+        dfs(root, 1);
+
+        return (ans == 1 ? -1 : ans);
+    }
+};
