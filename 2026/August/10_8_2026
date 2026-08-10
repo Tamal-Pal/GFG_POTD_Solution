@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int maxTask(vector<int>& h, vector<int>& l) {
+        int n = h.size();
+
+        // dp0 = maximum total when no task is done today
+        // dpL = maximum total when low-effort task is done today
+        // dpH = maximum total when high-effort task is done today
+        
+        int dp0 = 0;
+        int dpL = INT_MIN;
+        int dpH = INT_MIN;
+
+        for (int i = 0; i < n; i++) {
+            int bestPrev = max({dp0, dpL, dpH});
+
+            int new0 = bestPrev;          // do nothing
+            int newL = bestPrev + l[i];   // low-effort
+
+            // High-effort today requires no task yesterday
+            int newH = dp0 + h[i];
+
+            dp0 = new0;
+            dpL = newL;
+            dpH = newH;
+        }
+
+        return max({dp0, dpL, dpH});
+    }
+};
