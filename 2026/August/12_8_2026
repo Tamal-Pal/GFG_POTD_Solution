@@ -1,0 +1,49 @@
+class Solution {
+public:
+    vector<int> findWays(vector<vector<int>>& grid) {
+        const int MOD = 1e9 + 7;
+        int n = grid.size();
+
+        vector<vector<long long>> ways(n, vector<long long>(n, 0));
+        vector<vector<int>> best(n, vector<int>(n, 0));
+
+        // Starting cell
+        ways[0][0] = 1;
+        best[0][0] = grid[0][0];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0)
+                    continue;
+
+                // Reach (i,j) from the cell above (i-1,j).
+                // The above cell must allow moving Down: value 2 or 3.
+                if (i > 0 && (grid[i - 1][j] == 2 || grid[i - 1][j] == 3)) {
+                    ways[i][j] = ways[i - 1][j];
+
+                    if (ways[i - 1][j] > 0)
+                        best[i][j] = best[i - 1][j] + grid[i][j];
+                }
+
+                // Reach (i,j) from the cell on the left (i,j-1).
+                // The left cell must allow moving Right: value 1 or 3.
+                if (j > 0 && (grid[i][j - 1] == 1 || grid[i][j - 1] == 3)) {
+                    ways[i][j] =
+                        (ways[i][j] + ways[i][j - 1]) % MOD;
+
+                    if (ways[i][j - 1] > 0) {
+                        int candidate =
+                            best[i][j - 1] + grid[i][j];
+
+                        best[i][j] = max(best[i][j], candidate);
+                    }
+                }
+            }
+        }
+
+        return {
+            (int)ways[n - 1][n - 1],
+            best[n - 1][n - 1]
+        };
+    }
+};
