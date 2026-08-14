@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    bool isPossible(vector<int>& arr, int s, int x) {
+        long long curSum = s;  // Sum of all numbers currently on paper
+        long long remaining = x;
+
+        // The first number written on the paper is s.
+        // Process all written numbers in increasing order.
+        vector<long long> vals;
+        vals.push_back(s);
+
+        for (int a : arr) {
+            long long next = curSum + a;
+
+            if (next > x)
+                break;
+
+            vals.push_back(next);
+            curSum += next;
+        }
+
+        // Greedily form x from the largest values.
+        for (int i = (int)vals.size() - 1; i >= 0; --i) {
+            if (vals[i] <= remaining)
+                remaining -= vals[i];
+
+            if (remaining == 0)
+                return true;
+        }
+
+        return false;
+    }
+};
