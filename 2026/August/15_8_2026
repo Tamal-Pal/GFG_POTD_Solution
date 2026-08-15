@@ -1,0 +1,45 @@
+class Solution {
+public:
+    int countWithout(int n, int d) {
+        if (n == 0)
+            return 0;
+
+        string s = to_string(n);
+        int len = s.size();
+
+        // dp[pos][tight][started]
+        long long dp[12][2][2] = {};
+
+        dp[0][1][0] = 1;
+
+        for (int pos = 0; pos < len; pos++) {
+            for (int tight = 0; tight <= 1; tight++) {
+                for (int started = 0; started <= 1; started++) {
+                    long long ways = dp[pos][tight][started];
+
+                    if (ways == 0)
+                        continue;
+
+                    int limit = tight ? (s[pos] - '0') : 9;
+
+                    for (int digit = 0; digit <= limit; digit++) {
+                        int newTight = tight && (digit == limit);
+
+                        // Leading zero isn't part of the number.
+                        int newStarted = started || (digit != 0);
+
+                        // If this is an actual digit and it equals d,
+                        // this number is invalid.
+                        if (newStarted && digit == d)
+                            continue;
+
+                        dp[pos + 1][newTight][newStarted] += ways;
+                    }
+                }
+            }
+        }
+
+        // Count valid positive numbers.
+        return dp[len][0][1] + dp[len][1][1];
+    }
+};
