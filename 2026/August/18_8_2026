@@ -1,0 +1,94 @@
+class Solution {
+public:
+    string compress(string &s) {
+        int n = s.size();
+
+        // Z-function.
+        // z[i] = length of the longest prefix of s
+        // matching s[i...].
+        vector<int> z(n, 0);
+
+        for (int i = 1, l = 0, r = 0; i < n; ++i) {
+            if (i <= r)
+                z[i] = min(r - i + 1, z[i - l]);
+
+            while (i + z[i] < n &&
+                   s[z[i]] == s[i + z[i]]) {
+                ++z[i];
+            }
+
+            if (i + z[i] - 1 > r) {
+                l = i;
+                r = i + z[i] - 1;
+            }
+        }
+
+        /*
+         * canStar[i] means:
+         *
+         * current decoded string = s[0...i-1]
+         *
+         * and the next i characters are exactly the same,
+         * so '*' can duplicate the current decoded string.
+         */
+        vector<bool> canStar(n + 1, false);
+
+        for (int i = 1; 2 * i <= n; ++i) {
+            canStar[i] = (z[i] >= i);
+        }
+
+        /*
+         * dp[i] = minimum number of encoded characters needed
+         * to generate s[i...n-1], assuming the current decoded
+         * prefix has length i.
+         *
+         * Normal character:
+         *     i -> i + 1
+         *
+         * '*':
+         *     i -> 2*i
+         */
+        const int INF = 1e9;
+        vector<int> dp(n + 1, INF);
+
+        dp[n] = 0;
+
+        for (int i = n - 1; i >= 0; --i) {
+            // Add s[i] normally.
+            dp[i] = 1 + dp[i + 1];
+
+            // Or use '*'.
+            if (i > 0 && 2 * i <= n && canStar[i]) {
+                dp[i] = min(dp[i], 1 + dp[2 * i]);
+            }
+        }
+
+        /*
+         * Reconstruct the lexicographically smallest encoding
+         * among all encodings having the minimum length dp[0].
+         *
+         * If '*' is part of an optimal solution, take it before
+         * a normal character because '*' is lexicographically
+         * smaller than every lowercase letter.
+         */
+        string ans;
+        int i = 0;
+
+        while (i < n) {
+            // Prefer '*' whenever it keeps the minimum length.
+            if (i > 0 &&
+                2 * i <= n &&
+                canStar[i] &&
+                1 + dp[2 * i] == dp[i]) {
+
+                ans.push_back('*');
+                i *= 2;
+            } else {
+                ans.push_back(s[i]);
+                ++i;
+            }
+        }
+
+        return ans;
+    }
+};
