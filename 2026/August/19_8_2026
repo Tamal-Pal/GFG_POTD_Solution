@@ -1,0 +1,39 @@
+class Solution {
+  public:
+    
+    // Count triplets with sum <= target
+    long long countLessEqual(vector<int>& arr, int target) {
+        int n = arr.size();
+        long long count = 0;
+
+        for (int i = 0; i < n - 2; i++) {
+            int left = i + 1;
+            int right = n - 1;
+
+            while (left < right) {
+                long long sum = 1LL * arr[i] + arr[left] + arr[right];
+
+                if (sum <= target) {
+                    // Since the array is sorted, all elements from
+                    // left+1 ... right with arr[i] and arr[left]
+                    // will also form a valid triplet.
+                    count += (right - left);
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    int countTriplets(vector<int> &arr, int l, int r) {
+        sort(arr.begin(), arr.end());
+
+        long long ans = countLessEqual(arr, r)
+                      - countLessEqual(arr, l - 1);
+
+        return (int)ans;
+    }
+};
