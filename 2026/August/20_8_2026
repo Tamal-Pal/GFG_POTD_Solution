@@ -1,0 +1,27 @@
+class Solution {
+  public:
+    int maxDiff(Node* root) {
+        int ans = INT_MIN;
+
+        function<int(Node*)> dfs = [&](Node* node) -> int {
+            if (!node) return INT_MAX;
+
+            int leftMin = dfs(node->left);
+            int rightMin = dfs(node->right);
+
+            int subtreeMin = min(node->data, min(leftMin, rightMin));
+
+            // There is a descendant on the left/right.
+            if (leftMin != INT_MAX)
+                ans = max(ans, node->data - leftMin);
+
+            if (rightMin != INT_MAX)
+                ans = max(ans, node->data - rightMin);
+
+            return subtreeMin;
+        };
+
+        dfs(root);
+        return ans;
+    }
+};
