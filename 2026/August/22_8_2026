@@ -1,0 +1,106 @@
+class Solution {
+    
+    // Find LCA of p and q
+    Node* findLCA(Node* root, int p, int q) {
+        if (!root)
+            return nullptr;
+
+        if (root->data == p || root->data == q)
+            return root;
+
+        Node* left = findLCA(root->left, p, q);
+        Node* right = findLCA(root->right, p, q);
+
+        if (left && right)
+            return root;
+
+        return left ? left : right;
+    }
+
+    /*
+        Count turns from root to target.
+
+        dir:
+        0 -> we arrived at this node from a left edge
+        1 -> we arrived at this node from a right edge
+       -1 -> no previous direction
+
+        When we go:
+          left after right  => turn
+          right after left  => turn
+    */
+    bool countTurns(Node* root, int target, int dir, int turns, int& ans) {
+        if (!root)
+            return false;
+
+        if (root->data == target) {
+            ans = turns;
+            return true;
+        }
+
+        // Go left
+        if (root->left) {
+            int newTurns = turns;
+
+            if (dir == 1)
+                newTurns++;
+
+            if (countTurns(root->left, target, 0, newTurns, ans))
+                return true;
+        }
+
+        // Go right
+        if (root->right) {
+            int newTurns = turns;
+
+            if (dir == 0)
+                newTurns++;
+
+            if (countTurns(root->right, target, 1, newTurns, ans))
+                return true;
+        }
+
+        return false;
+    }
+
+public:
+    int numberOfTurns(Node* root, int p, int q) {
+        if (!root)
+            return -1;
+
+        Node* lca = findLCA(root, p, q);
+
+        if (!lca)
+            return -1;
+
+        int turnsP = 0;
+        int turnsQ = 0;
+
+        // Number of turns from LCA to p
+        if (lca->data != p) {
+            countTurns(lca, p, -1, 0, turnsP);
+        }
+
+        // Number of turns from LCA to q
+        if (lca->data != q) {
+            countTurns(lca, q, -1, 0, turnsQ);
+        }
+
+        /*
+            If LCA is neither p nor q, the path goes:
+            
+                 p -> ... -> LCA -> ... -> q
+
+            There is one additional turn at the LCA.
+        */
+        if (lca->data != p && lca->data != q)
+            return turnsP + turnsQ + 1;
+
+        // If one of p/q is the LCA, don't add the LCA turn.
+        if (turnsP + turnsQ > 0)
+            return turnsP + turnsQ;
+
+        // Completely straight path.
+        return -1;
+    }
+};
