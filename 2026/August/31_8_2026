@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    long long solve(long long n, int i, int d, int c) {
+        if (n == 0)
+            return 0;
+
+        // Only insertions
+        long long ans = n * 1LL * i;
+
+        if (n == 1)
+            return ans;
+
+        if (n % 2 == 0) {
+            // Reach n/2, then copy-paste.
+            ans = min(ans, solve(n / 2, i, d, c) + c);
+        } else {
+            // Reach n/2, copy-paste to n-1, then insert.
+            ans = min(ans,
+                      solve(n / 2, i, d, c) + c + i);
+
+            // Reach n/2+1, copy-paste to n+1, then delete.
+            ans = min(ans,
+                      solve(n / 2 + 1, i, d, c) + c + d);
+        }
+
+        return ans;
+    }
+
+    int minCost(int n, int i, int d, int c) {
+        return (int)solve(n, i, d, c);
+    }
+};
