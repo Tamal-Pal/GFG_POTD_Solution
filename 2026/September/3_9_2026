@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int maxDiffSum(vector<int>& arr) {
+        int n = arr.size();
+
+        if (n <= 1)
+            return 0;
+
+        // First element:
+        // Either replace it by 1 or keep arr[0].
+        long long dp1 = 0;
+        long long dpA = 0;
+
+        for (int i = 1; i < n; i++) {
+            long long x = arr[i];
+
+            long long newDp1 = max(
+                dp1,                              // 1 -> 1
+                dpA + abs((long long)arr[i - 1] - 1) // arr[i-1] -> 1
+            );
+
+            long long newDpA = max(
+                dp1 + abs(1LL - x),                    // 1 -> x
+                dpA + abs((long long)arr[i - 1] - x)   // arr[i-1] -> x
+            );
+
+            dp1 = newDp1;
+            dpA = newDpA;
+        }
+
+        return (int)max(dp1, dpA);
+    }
+};
