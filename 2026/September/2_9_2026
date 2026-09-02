@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    int solve(int n, string s) {
+        int available = n;
+        int rejected = 0;
+        
+        bool assigned[26] = {false};
+        bool seen[26] = {false};
+        
+        for (char c : s) {
+            int id = c - 'A';
+            
+            if (!seen[id]) {
+                // First occurrence: arrival
+                seen[id] = true;
+                
+                if (available > 0) {
+                    available--;
+                    assigned[id] = true;
+                } else {
+                    rejected++;
+                }
+            } else {
+                // Second occurrence: departure
+                if (assigned[id]) {
+                    available++;
+                }
+            }
+        }
+        
+        return rejected;
+    }
+};
