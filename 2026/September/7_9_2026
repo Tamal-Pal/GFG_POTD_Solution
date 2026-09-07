@@ -1,0 +1,53 @@
+class Solution {
+  public:
+    int minCount(vector<int>& arr) {
+        int n = arr.size();
+
+        // dp[i][j] = maximum number of elements selected so far,
+        // where i is the last index of the increasing subsequence
+        // and j is the last index of the decreasing subsequence.
+        //
+        // Index 0 is used as a sentinel meaning "no element yet".
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+
+        dp[0][0] = 0;
+
+        for (int k = 1; k <= n; k++) {
+            vector<vector<int>> ndp(n + 1, vector<int>(n + 1, -1));
+
+            for (int i = 0; i < k; i++) {
+                for (int j = 0; j < k; j++) {
+                    if (dp[i][j] == -1)
+                        continue;
+
+                    int cur = dp[i][j];
+
+                    // 1. Leave arr[k-1] unused
+                    ndp[i][j] = max(ndp[i][j], cur);
+
+                    // 2. Put arr[k-1] in increasing subsequence
+                    if (i == 0 || arr[i - 1] < arr[k - 1]) {
+                        ndp[k][j] = max(ndp[k][j], cur + 1);
+                    }
+
+                    // 3. Put arr[k-1] in decreasing subsequence
+                    if (j == 0 || arr[j - 1] > arr[k - 1]) {
+                        ndp[i][k] = max(ndp[i][k], cur + 1);
+                    }
+                }
+            }
+
+            dp.swap(ndp);
+        }
+
+        int maximumSelected = 0;
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                maximumSelected = max(maximumSelected, dp[i][j]);
+            }
+        }
+
+        return n - maximumSelected;
+    }
+};
