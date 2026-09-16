@@ -1,0 +1,51 @@
+class Solution {
+    public int getCount(Node root, int k) {
+        if (root == null) return 0;
+
+        ArrayList<Integer> costs = new ArrayList<>();
+
+        // Queue stores node and its level
+        Queue<Node> q = new LinkedList<>();
+        Queue<Integer> level = new LinkedList<>();
+
+        q.add(root);
+        level.add(1);
+
+        while (!q.isEmpty()) {
+            Node curr = q.poll();
+            int lev = level.poll();
+
+            // Leaf node
+            if (curr.left == null && curr.right == null) {
+                costs.add(lev);
+                continue;
+            }
+
+            if (curr.left != null) {
+                q.add(curr.left);
+                level.add(lev + 1);
+            }
+
+            if (curr.right != null) {
+                q.add(curr.right);
+                level.add(lev + 1);
+            }
+        }
+
+        // Visit cheapest leaves first
+        Collections.sort(costs);
+
+        int count = 0;
+        int totalCost = 0;
+
+        for (int cost : costs) {
+            if (totalCost + cost > k)
+                break;
+
+            totalCost += cost;
+            count++;
+        }
+
+        return count;
+    }
+}
