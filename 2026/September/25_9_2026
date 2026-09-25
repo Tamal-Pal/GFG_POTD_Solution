@@ -1,0 +1,80 @@
+import java.util.*;
+
+class Solution {
+    
+    public int maxStackHeight(int[] r, int[] h) {
+        int n = r.length;
+        
+        // disc[i] = {radius, height}
+        int[][] discs = new int[n][2];
+        int maxH = 0;
+        
+        for (int i = 0; i < n; i++) {
+            discs[i][0] = r[i];
+            discs[i][1] = h[i];
+            maxH = Math.max(maxH, h[i]);
+        }
+        
+        // Sort by radius
+        Arrays.sort(discs, (a, b) -> Integer.compare(a[0], b[0]));
+        
+        // Fenwick Tree storing maximum stack height
+        int[] bit = new int[maxH + 2];
+        
+        int answer = 0;
+        int i = 0;
+        
+        while (i < n) {
+            int j = i;
+            
+            // Find all discs having the same radius
+            while (j < n && discs[j][0] == discs[i][0]) {
+                j++;
+            }
+            
+            // Store results temporarily so same-radius discs
+            // cannot be used on top of each other.
+            int[] dp = new int[j - i];
+            
+            for (int k = i; k < j; k++) {
+                int height = discs[k][1];
+                
+                // Need strictly smaller height, so query height - 1
+                int best = query(bit, height - 1);
+                
+                dp[k - i] = best + height;
+                answer = Math.max(answer, dp[k - i]);
+            }
+            
+            // Update only after processing this radius group
+            for (int k = i; k < j; k++) {
+                int height = discs[k][1];
+                update(bit, height, dp[k - i]);
+            }
+            
+            i = j;
+        }
+        
+        return answer;
+    }
+    
+    // Maximum value in range [1, index]
+    private int query(int[] bit, int index) {
+        int result = 0;
+        
+        while (index > 0) {
+            result = Math.max(result, bit[index]);
+            index -= index & -index;
+        }
+        
+        return result;
+    }
+    
+    // Update position with maximum value
+    private void update(int[] bit, int index, int value) {
+        while (index < bit.length) {
+            bit[index] = Math.max(bit[index], value);
+            index += index & -index;
+        }
+    }
+}
