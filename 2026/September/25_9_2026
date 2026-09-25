@@ -1,0 +1,89 @@
+class Solution {
+    public int maxHeight(int[] height, int[] width, int[] length) {
+        int n = height.length;
+
+        // Each box has 3 unique orientation types:
+        // [baseLength, baseWidth, height]
+        int[][] box = new int[3 * n][3];
+
+        int idx = 0;
+
+        for (int i = 0; i < n; i++) {
+            // height as vertical dimension
+            box[idx++] = new int[]{
+                Math.max(width[i], length[i]),
+                Math.min(width[i], length[i]),
+                height[i]
+            };
+
+            // width as vertical dimension
+            box[idx++] = new int[]{
+                Math.max(height[i], length[i]),
+                Math.min(height[i], length[i]),
+                width[i]
+            };
+
+            // length as vertical dimension
+            box[idx++] = new int[]{
+                Math.max(height[i], width[i]),
+                Math.min(height[i], width[i]),
+                length[i]
+            };
+        }
+
+        /*
+         * dp[i] = maximum height obtainable when orientation i
+         * is the bottom-most box of the remaining stack.
+         *
+         * Since a box can be reused, we compute the longest path
+         * over the DAG formed by strictly decreasing base dimensions.
+         */
+        int[] dp = new int[3 * n];
+
+        // Sort orientations by decreasing base dimensions.
+        // A simple O(m^2) relaxation is sufficient because m <= 300.
+        int m = 3 * n;
+
+        for (int i = 0; i < m; i++) {
+            dp[i] = box[i][2];
+        }
+
+        /*
+         * Repeated relaxation.
+         *
+         * If box j can be placed on box i:
+         *   box[j].base1 < box[i].base1
+         *   box[j].base2 < box[i].base2
+         *
+         * Since both dimensions strictly decrease, the graph is acyclic.
+         */
+        boolean changed = true;
+
+        while (changed) {
+            changed = false;
+
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (box[j][0] < box[i][0] &&
+                        box[j][1] < box[i][1]) {
+
+                        int newHeight = dp[i] + box[j][2];
+
+                        if (newHeight > dp[j]) {
+                            dp[j] = newHeight;
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        int ans = 0;
+
+        for (int x : dp) {
+            ans = Math.max(ans, x);
+        }
+
+        return ans;
+    }
+}
