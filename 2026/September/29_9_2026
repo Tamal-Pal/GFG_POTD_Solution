@@ -1,0 +1,54 @@
+class Solution {
+    public int minStepToReachTarget(int knightPos[], int targetPos[], int n) {
+
+        // Convert 1-based indexing to 0-based indexing
+        int sx = knightPos[0] - 1;
+        int sy = knightPos[1] - 1;
+        int tx = targetPos[0] - 1;
+        int ty = targetPos[1] - 1;
+
+        if (sx == tx && sy == ty)
+            return 0;
+
+        int[][] moves = {
+            {2, 1}, {2, -1},
+            {-2, 1}, {-2, -1},
+            {1, 2}, {1, -2},
+            {-1, 2}, {-1, -2}
+        };
+
+        boolean[][] visited = new boolean[n][n];
+
+        // Queue: {row, col, distance}
+        java.util.Queue<int[]> queue = new java.util.LinkedList<>();
+
+        queue.offer(new int[]{sx, sy, 0});
+        visited[sx][sy] = true;
+
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+
+            int x = curr[0];
+            int y = curr[1];
+            int dist = curr[2];
+
+            for (int[] move : moves) {
+                int nx = x + move[0];
+                int ny = y + move[1];
+
+                // Check if the new position is inside the board
+                if (nx >= 0 && nx < n && ny >= 0 && ny < n
+                        && !visited[nx][ny]) {
+
+                    if (nx == tx && ny == ty)
+                        return dist + 1;
+
+                    visited[nx][ny] = true;
+                    queue.offer(new int[]{nx, ny, dist + 1});
+                }
+            }
+        }
+
+        return -1;
+    }
+}
