@@ -1,0 +1,43 @@
+class Solution {
+    int ans;
+
+    public int maxPathSum(Node root) {
+        ans = Integer.MIN_VALUE;
+
+        // A leaf-to-leaf path needs at least two leaves
+        int[] count = new int[1];
+
+        maxRootToLeaf(root, count);
+
+        return count[0] < 2 ? -1 : ans;
+    }
+
+    private int maxRootToLeaf(Node node, int[] count) {
+        if (node == null) {
+            return Integer.MIN_VALUE;
+        }
+
+        // Leaf node
+        if (node.left == null && node.right == null) {
+            count[0]++;
+            return node.data;
+        }
+
+        int left = maxRootToLeaf(node.left, count);
+        int right = maxRootToLeaf(node.right, count);
+
+        // Both children contain a leaf
+        if (node.left != null && node.right != null) {
+            ans = Math.max(ans, left + node.data + right);
+            return node.data + Math.max(left, right);
+        }
+
+        // Only left subtree exists
+        if (node.left != null) {
+            return node.data + left;
+        }
+
+        // Only right subtree exists
+        return node.data + right;
+    }
+}
