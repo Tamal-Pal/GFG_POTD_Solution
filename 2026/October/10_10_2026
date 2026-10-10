@@ -1,0 +1,21 @@
+
+class Solution {
+    public boolean balancePan(int a, int b) {
+        long target = b;
+
+        while (target > 0) {
+            long remainder = target % a;
+
+            if (remainder == 0 || remainder == 1) {
+                target /= a;
+            } else if (remainder == a - 1) {
+                // Treat (a - 1) as -1 and carry 1
+                target = target / a + 1;
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
