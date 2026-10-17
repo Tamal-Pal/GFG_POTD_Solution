@@ -1,0 +1,47 @@
+
+class Solution {
+    public boolean isItPossible(String s1, String s2) {
+        int n = s1.length();
+        int m = s2.length();
+
+        // Lengths must be equal
+        if (n != m) {
+            return false;
+        }
+
+        int i = 0, j = 0;
+
+        while (i < n && j < m) {
+            // Skip empty positions
+            while (i < n && s1.charAt(i) == '#') i++;
+            while (j < m && s2.charAt(j) == '#') j++;
+
+            // Both strings must finish together
+            if (i == n || j == m) {
+                return i == n && j == m;
+            }
+
+            char ch = s1.charAt(i);
+
+            // Non-empty characters must match
+            if (ch != s2.charAt(j)) {
+                return false;
+            }
+
+            // A can move only left
+            if (ch == 'A' && i < j) {
+                return false;
+            }
+
+            // B can move only right
+            if (ch == 'B' && i > j) {
+                return false;
+            }
+
+            i++;
+            j++;
+        }
+
+        return true;
+    }
+}
