@@ -1,0 +1,57 @@
+
+class Solution {
+    public int goodIndices(int[] arr) {
+        int n = arr.length;
+        // 0 = unvisited, 1 = visiting, 2 = good, 3 = bad
+        int[] state = new int[n];
+
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (state[i] == 0) {
+                dfs(i, arr, state);
+            }
+
+            if (state[i] == 2) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private int dfs(int i, int[] arr, int[] state) {
+        int n = arr.length;
+
+        if (i < 0 || i >= n) {
+            return 2; // Good: exited the array
+        }
+
+        if (state[i] == 2 || state[i] == 3) {
+            return state[i];
+        }
+
+        if (state[i] == 1) {
+            return 3; // Cycle detected
+        }
+
+        if (arr[i] == 0) {
+            state[i] = 3; // Bad: no movement
+            return 3;
+        }
+
+        state[i] = 1; // Mark as visiting
+
+        long next = (long) i + arr[i];
+        int result;
+
+        if (next < 0 || next >= n) {
+            result = 2;
+        } else {
+            result = dfs((int) next, arr, state);
+        }
+
+        state[i] = result;
+        return result;
+    }
+}
