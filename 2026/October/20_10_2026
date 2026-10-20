@@ -1,0 +1,30 @@
+
+class Solution {
+    public ArrayList<Integer> lexicographicallyLargest(int[] arr) {
+        int n = arr.length;
+        ArrayList<Integer> result = new ArrayList<>();
+
+        int i = 0;
+
+        while (i < n) {
+            int j = i;
+
+            // Find the contiguous group with the same parity
+            while (j + 1 < n &&
+                   arr[j] % 2 == arr[j + 1] % 2) {
+                j++;
+            }
+
+            // Sort this group in descending order
+            Arrays.sort(arr, i, j + 1);
+
+            for (int k = j; k >= i; k--) {
+                result.add(arr[k]);
+            }
+
+            i = j + 1;
+        }
+
+        return result;
+    }
+}
