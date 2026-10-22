@@ -1,0 +1,78 @@
+
+class Solution {
+    public int minimumSum(String s) {
+        int n = s.length();
+        int m = (n + 1) / 2;
+
+        // Validate mirrored characters
+        for (int i = 0; i < m; i++) {
+            char left = s.charAt(i);
+            char right = s.charAt(n - 1 - i);
+
+            if (left != '?' && right != '?' && left != right) {
+                return -1;
+            }
+        }
+
+        final int INF = 1_000_000_000;
+        int[] dp = new int[26];
+        int[] next = new int[26];
+
+        // Initialize the first mirrored pair
+        for (int c = 0; c < 26; c++) {
+            dp[c] = INF;
+        }
+
+        char first = s.charAt(0);
+        char mirror = s.charAt(n - 1);
+
+        if (first != '?') {
+            dp[first - 'a'] = 0;
+        } else if (mirror != '?') {
+            dp[mirror - 'a'] = 0;
+        } else {
+            for (int c = 0; c < 26; c++) {
+                dp[c] = 0;
+            }
+        }
+
+        // DP over the first half, including the center
+        for (int i = 1; i < m; i++) {
+            char a = s.charAt(i);
+            char b = s.charAt(n - 1 - i);
+
+            for (int c = 0; c < 26; c++) {
+                next[c] = INF;
+            }
+
+            for (int c = 0; c < 26; c++) {
+                if (a != '?' && c != a - 'a') {
+                    continue;
+                }
+                if (b != '?' && c != b - 'a') {
+                    continue;
+                }
+
+                for (int p = 0; p < 26; p++) {
+                    if (dp[p] == INF) {
+                        continue;
+                    }
+
+                    int cost = dp[p] + 2 * Math.abs(c - p);
+                    next[c] = Math.min(next[c], cost);
+                }
+            }
+
+            int[] temp = dp;
+            dp = next;
+            next = temp;
+        }
+
+        int answer = INF;
+        for (int cost : dp) {
+            answer = Math.min(answer, cost);
+        }
+
+        return answer == INF ? -1 : answer;
+    }
+}
