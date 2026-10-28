@@ -1,0 +1,19 @@
+class Solution {
+    public char nthCharacter(int n) {
+        long count = 9;
+        long digits = 1;
+        long start = 1;
+
+        while (n > count * digits) {
+            n -= count * digits;
+            count *= 10;
+            digits++;
+            start *= 10;
+        }
+
+        long number = start + (n - 1) / digits;
+        int index = (int) ((n - 1) % digits);
+
+        return Long.toString(number).charAt(index);
+    }
+}
