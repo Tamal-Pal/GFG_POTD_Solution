@@ -1,0 +1,22 @@
+
+class Solution {
+    public int maxPackages(int[] arr, int totalTime) {
+        int n = arr.length;
+
+        int windowSum = 0;
+        int maxPackages = 0;
+
+        for (int i = 0; i < n; i++) {
+            windowSum += arr[i];
+
+            // Maintain window size <= totalTime
+            if (i >= totalTime) {
+                windowSum -= arr[i - totalTime];
+            }
+
+            maxPackages = Math.max(maxPackages, windowSum);
+        }
+
+        return maxPackages;
+    }
+}
