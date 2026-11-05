@@ -1,0 +1,43 @@
+
+class Solution {
+    public int getMinimumDays(String s, int[] p) {
+        int n = s.length();
+
+        // Check whether the condition is satisfied
+        // after performing 'days' replacements.
+        boolean[] removed = new boolean[n];
+
+        int low = 0, high = n;
+
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+
+            // Reset removed positions
+            removed = new boolean[n];
+
+            for (int i = 0; i < mid; i++) {
+                removed[p[i]] = true;
+            }
+
+            boolean valid = true;
+
+            for (int i = 0; i < n - 1; i++) {
+                if (!removed[i] &&
+                    !removed[i + 1] &&
+                    s.charAt(i) == s.charAt(i + 1)) {
+
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return low;
+    }
+}
