@@ -1,0 +1,41 @@
+
+class Solution {
+    public ArrayList<String> generateUsernames(String[] arr) {
+        ArrayList<String> result = new ArrayList<>();
+
+        HashSet<String> used = new HashSet<>();
+        HashMap<String, Integer> nextSuffix = new HashMap<>();
+
+        // Initially reserve all usernames from the input
+        for (String name : arr) {
+            used.add(name);
+        }
+
+        for (String name : arr) {
+
+            // First occurrence: keep the original username
+            if (!result.contains(name) && 
+                !nextSuffix.containsKey(name)) {
+                result.add(name);
+                nextSuffix.put(name, 1);
+            } 
+            else {
+                // Find the smallest available suffix
+                int suffix = nextSuffix.getOrDefault(name, 1);
+
+                while (used.contains(name + suffix)) {
+                    suffix++;
+                }
+
+                String newName = name + suffix;
+
+                result.add(newName);
+                used.add(newName);
+
+                nextSuffix.put(name, suffix + 1);
+            }
+        }
+
+        return result;
+    }
+}
