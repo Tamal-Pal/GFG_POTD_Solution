@@ -1,0 +1,43 @@
+
+class Solution {
+    public char posInfinite(String s, int pos) {
+        long len = s.length();
+        long p = pos;
+
+        // Store the lengths of each expansion
+        long[] lengths = new long[50];
+        int[] steps = new int[50];
+
+        int count = 0;
+        long step = 1;
+
+        while (len < p) {
+            lengths[count] = len;
+            steps[count] = (int) step;
+            count++;
+
+            len = 2 * len + step;
+            step++;
+        }
+
+        // Trace the position backwards
+        while (count > 0) {
+            count--;
+
+            long oldLen = lengths[count];
+            long gap = steps[count];
+
+            // Position belongs to the '$' section
+            if (p > oldLen && p <= oldLen + gap) {
+                return '$';
+            }
+
+            // Position belongs to the reversed string
+            if (p > oldLen + gap) {
+                p = 2 * oldLen + gap - p + 1;
+            }
+        }
+
+        return s.charAt((int) p - 1);
+    }
+}
