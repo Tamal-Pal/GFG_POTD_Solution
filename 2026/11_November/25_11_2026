@@ -1,0 +1,80 @@
+
+class Solution {
+    static final long MOD = 1000000007L;
+
+    // Sum of ceil((x-a)/(a-b)) for x = 1 to y
+    private long prefixQ(long y, long a, long c) {
+        if (y <= a) return 0;
+
+        long n = y - a;
+        long q = n / c;
+        long rem = n % c;
+
+        long sum = c * q * (q + 1) / 2;
+        sum += rem * (q + 1);
+
+        return sum;
+    }
+
+    // Minimum time using a jump after reaching x
+    private long jumpTime(long x, long a, long b, long c) {
+        if (x <= a) return x + 1;
+
+        long q = (x - a + c - 1) / c;
+
+        return x + 1 + 2 * b * q;
+    }
+
+    public int minTime(int a, int b, int d, int l, int r) {
+
+        long c = a - b;
+
+        // Minimum time without using a special jump
+        long k = Math.max(0L, (d - a + c - 1) / c);
+
+        long normalTime = d + 2L * b * k;
+
+        // Convert jump lengths into required positions
+        long L = d - r;
+        long R = d - l;
+
+        // Binary search for largest x where jumpTime(x) < normalTime
+        long low = L;
+        long high = R;
+        long best = L - 1;
+
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+
+            if (jumpTime(mid, a, b, c) < normalTime) {
+                best = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        // Sum jump times for positions [L, best]
+        long ans = 0;
+
+        if (best >= L) {
+            long count = best - L + 1;
+
+            // Sum of x + 1
+            long sumX = (L + best) * count / 2;
+
+            // Sum of ceil((x-a)/c)
+            long sumQ = prefixQ(best, a, c)
+                      - prefixQ(L - 1, a, c);
+
+            ans = (sumX + count + 2L * b * sumQ) % MOD;
+        }
+
+        // Remaining positions use normal movement
+        long remaining = R - Math.max(best, L - 1);
+
+        ans = (ans + (remaining % MOD) * (normalTime % MOD)) % MOD;
+
+        return (int) ans;
+    }
+}
